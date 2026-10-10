@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>KVS வாடகை பாத்திரக்கடை - ஆர்டர் / Order</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;600;700&family=Mulish:wght@400;600;700;800&family=Tiro+Tamil&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root{--bg:#f8f3e7;--card:#fff;--ink:#241c1a;--mute:#7b6f67;--line:#e6dcc0;--sel:#fff3cf;--maroon:#7a1320;--maroon2:#4d0f18;--gold:#c4942d;--goldl:#ecd89b;--navy:#17285a;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1a1416;--card:#251c1f;--ink:#f3ece4;--mute:#a99e98;--line:#3a2d31;--sel:#3a2e17}}
+:root[data-theme="dark"]{--bg:#1a1416;--card:#251c1f;--ink:#f3ece4;--mute:#a99e98;--line:#3a2d31;--sel:#3a2e17}
+html{scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 Mulish,"Noto Sans Tamil",system-ui,sans-serif;padding-bottom:92px}
+.ta{font-family:"Noto Sans Tamil",Mulish,sans-serif}
+button{font:inherit;cursor:pointer;border:0}
+body.l-ta .en,body.l-en .ta{display:none!important}
+body.l-both button .en::before,body.l-both .chip .en::before{content:" / "}
+body.l-both .nm .en,body.l-both .lab .en{display:block;font-size:.78rem;color:var(--mute);font-weight:400}
+body.l-both .nm .ta{display:block}
+header{background:linear-gradient(140deg,var(--maroon),var(--maroon2));color:#fff;padding:14px 14px 12px}
+.top{display:flex;gap:12px;align-items:center;max-width:720px;margin:0 auto}
+.top svg{width:56px;height:56px;flex:none}
+.top h1{margin:0;font-size:1.12rem;line-height:1.25;color:var(--goldl)}
+.top p{margin:2px 0 0;font-size:.74rem;color:#f3e3b5;opacity:.9}
+.hrow{max-width:720px;margin:12px auto 0;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.call{background:var(--gold);color:#2a1a00;text-decoration:none;font-weight:800;font-size:.85rem;padding:9px 14px;border-radius:99px}
+.seg{margin-left:auto;display:flex;background:rgba(255,255,255,.14);border-radius:99px;padding:3px}
+.seg button{background:none;color:#fff;font-size:.78rem;padding:7px 11px;border-radius:99px;font-weight:700}
+.seg button.on{background:#fff;color:var(--maroon)}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:10px 12px 8px;border-bottom:1px solid var(--line)}
+.bar>*{max-width:720px;margin-left:auto;margin-right:auto}
+.search{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:inherit}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:9px 0 2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;background:var(--card);color:var(--ink);border:1.5px solid var(--line);padding:7px 13px;border-radius:99px;font-size:.82rem;font-weight:600}
+main{max-width:720px;margin:0 auto;padding:6px 12px}
+.cat{margin:16px 2px 8px;color:var(--maroon);font-weight:800;font-size:1rem;border-left:4px solid var(--gold);padding-left:9px;scroll-margin-top:120px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .cat{color:var(--goldl)}}
+.item{display:flex;align-items:center;gap:10px;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:10px 10px 10px 14px;margin-bottom:8px}
+.item.on{background:var(--sel);border-color:var(--gold)}
+.nm{flex:1;min-width:0;font-weight:600;line-height:1.35}
+.step{display:flex;align-items:center;gap:4px;flex:none}
+.step button{width:42px;height:42px;border-radius:12px;font-size:1.4rem;font-weight:700;line-height:1;background:var(--navy);color:#fff}
+.step button.m{background:transparent;color:var(--navy);border:1.5px solid var(--line)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .step button.m{color:var(--goldl)}}
+.step input,.step .v{width:46px;height:42px;text-align:center;border:0;background:transparent;color:var(--ink);font:700 1.05rem Mulish,sans-serif;display:flex;align-items:center;justify-content:center}
+.item:not(.on) .step input{color:var(--mute)}
+.empty{text-align:center;color:var(--mute);padding:30px 10px;display:none}
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:8;background:var(--card);border-top:2px solid var(--gold);padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));box-shadow:0 -4px 16px rgba(0,0,0,.12)}
+.dock>div{max-width:720px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.cnt{flex:1;font-weight:700;line-height:1.25}
+.cnt small{display:block;color:var(--mute);font-weight:400;font-size:.76rem}
+.pri{background:var(--maroon);color:#fff;padding:13px 20px;border-radius:12px;font-weight:800}
+.pri:disabled{opacity:.4}
+.sec{background:var(--navy);color:#fff;padding:13px 16px;border-radius:12px;font-weight:700}
+.wa{background:#1f8a4c;color:#fff;padding:13px 16px;border-radius:12px;font-weight:700}
+#sheet{position:fixed;inset:0;z-index:20;background:var(--bg);overflow-y:auto;display:none;padding-top:env(safe-area-inset-top,0px);padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))}
+#sheet.open{display:block}
+.sh{max-width:720px;margin:0 auto;padding:0 14px}
+.shh{display:flex;align-items:center;gap:10px;padding:12px 0;position:sticky;top:0;background:var(--bg);z-index:2}
+.shh h2{margin:0;font-size:1.1rem;flex:1}
+.back{background:var(--card);color:var(--ink);border:1.5px solid var(--line);padding:9px 14px;border-radius:12px;font-weight:700}
+.ono{background:var(--navy);color:#fff;border-radius:14px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ono b{font:700 1.05rem monospace;color:var(--goldl)}
+.ono button{background:rgba(255,255,255,.15);color:#fff;border-radius:8px;padding:6px 10px;font-size:.75rem}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.form label{font-size:.78rem;color:var(--mute)}
+.form .full{grid-column:1/-1}
+.form input{width:100%;padding:12px;margin-top:3px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:inherit}
+.sdock{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:2px solid var(--gold);padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));z-index:3}
+.sdock>div{max-width:720px;margin:0 auto;display:flex;gap:10px}
+.sdock button{flex:1}
+.clr{display:block;margin:14px auto 0;background:none;color:var(--maroon);font-weight:700;padding:10px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .clr{color:#ff9aa6}}
+#toast{position:fixed;left:50%;bottom:calc(104px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#222;color:#fff;padding:10px 16px;border-radius:99px;font-size:.85rem;z-index:30;display:none;max-width:90%;text-align:center}
+#receipt{position:fixed;left:-10000px;top:0;width:560px;background:#fff;color:#111;padding:26px;font-family:"Noto Sans Tamil",Mulish,sans-serif}
+#receipt h3{margin:0;color:#7a1320;font-size:20px}
+#receipt table{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px}
+#receipt th{background:#17285a;color:#fff;padding:7px;text-align:left}
+#receipt td{padding:7px;border-bottom:1px solid #e6dcc0;vertical-align:top}
+#receipt small{color:#777}
+
+/* ---- Traditional temple-silk theme ---- */
+:root{--bg:#fbf3df;--card:#fffaf0;--line:#e3cf9a;--sel:#fde9b0;--maroon:#8a1a1f;--maroon2:#4f0d12;--gold:#c9971f;--goldl:#f1dc9f;--navy:#1f5b4a;--mm:#8a1a1f;
+--zari:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='12' viewBox='0 0 24 12'%3E%3Cpath d='M0 6L6 0l6 6-6 6zM12 6l6-6 6 6-6 6z' fill='none' stroke='%23e0b445' stroke-width='1.1'/%3E%3Ccircle cx='6' cy='6' r='1.4' fill='%23e0b445'/%3E%3Ccircle cx='18' cy='6' r='1.4' fill='%23e0b445'/%3E%3C/svg%3E")}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1214;--card:#2a1a1d;--line:#52392c;--sel:#47341a;--mm:#f1dc9f}}
+:root[data-theme="dark"]{--bg:#1c1214;--card:#2a1a1d;--line:#52392c;--sel:#47341a;--mm:#f1dc9f}
+body{background-color:var(--bg);background-image:radial-gradient(circle,rgba(201,151,31,.2) 1.3px,transparent 1.6px);background-size:24px 24px}
+.ta,.cat,.top h1{font-family:"Tiro Tamil","Noto Sans Tamil",serif}
+header{position:relative;padding:10px 14px 28px;background:radial-gradient(circle at 15% 0,rgba(201,151,31,.28),transparent 55%),linear-gradient(160deg,var(--maroon),var(--maroon2));border-bottom:2px solid var(--gold)}
+header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:16px;background:var(--maroon2) var(--zari) repeat-x center;border-top:1px solid var(--gold)}
+.inv{text-align:center;color:var(--goldl);font-size:.8rem;letter-spacing:.06em;margin-bottom:8px}
+.top svg{border-radius:50%;box-shadow:0 0 0 2px var(--gold),0 0 0 5px rgba(201,151,31,.35)}
+.top h1{font-size:1.3rem;font-weight:400;letter-spacing:.01em}
+.call{background:linear-gradient(var(--goldl),var(--gold));border:1px solid #f6e7b3;color:#3b0d12}
+.seg{border:1px solid rgba(241,220,159,.5);background:rgba(0,0,0,.2)}
+.seg button.on{background:var(--goldl);color:var(--maroon2)}
+.bar{background:var(--bg);border-bottom:1px solid var(--gold)}
+.search{border:1.5px solid var(--gold);border-radius:10px;background:var(--card)}
+.chip{border:1.5px solid var(--gold);border-radius:99px 99px 10px 10px;background:var(--card);color:var(--mm)}
+.chip:active{background:var(--maroon);color:#fff}
+.cat{display:flex;align-items:center;gap:12px;border:0;padding:0;margin:24px 2px 12px;color:var(--mm);font-size:1.12rem;font-weight:400}
+.cat::before,.cat::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}
+.cat::after{background:linear-gradient(270deg,transparent,var(--gold))}
+.ct{text-align:center}
+body.l-both .ct .ta{display:block}
+body.l-both .ct .en{display:block;font:600 .74rem Mulish,sans-serif;color:var(--mute);letter-spacing:.04em}
+.item{border:1px solid var(--gold);border-radius:10px;background:var(--card);box-shadow:inset 0 0 0 3px var(--card),inset 0 0 0 4px var(--line);padding:12px 12px 12px 16px}
+.item.on{background:var(--sel);box-shadow:inset 0 0 0 3px var(--sel),inset 0 0 0 4px var(--gold)}
+.item.on .nm{color:var(--mm)}
+.step button{background:var(--maroon);color:var(--goldl);border:1px solid var(--gold);border-radius:50%}
+.step button.m{background:transparent;color:var(--mm);border:1.5px solid var(--gold)}
+.dock{background:linear-gradient(var(--maroon),var(--maroon2));border-top:2px solid var(--gold);color:#fff}
+.dock::before{content:"";position:absolute;left:0;right:0;top:-14px;height:12px;background:var(--zari) repeat-x center;opacity:.9}
+.cnt small{color:var(--goldl)}
+.pri{background:linear-gradient(var(--goldl),var(--gold));color:#3b0d12;border:1px solid #f6e7b3;border-radius:10px;font-weight:800}
+.pri:disabled{opacity:.45}
+.sec{background:var(--maroon);color:var(--goldl);border:1.5px solid var(--gold);border-radius:10px}
+.wa{border-radius:10px;border:1.5px solid #8fd1a8}
+.sdock{border-top:2px solid var(--gold)}
+.shh h2{font-family:"Tiro Tamil",serif;font-weight:400;color:var(--mm)}
+.back{border:1.5px solid var(--gold);border-radius:10px}
+.ono{background:linear-gradient(160deg,var(--maroon),var(--maroon2));border:1.5px solid var(--gold);border-radius:10px;box-shadow:inset 0 0 0 3px var(--maroon2),inset 0 0 0 4px rgba(201,151,31,.6)}
+.ono small{color:var(--goldl)}
+.ono button{border:1px solid var(--gold)}
+.form input{border:1.5px solid var(--gold);border-radius:8px;background:var(--card)}
+.clr{color:var(--mm)}
+#toast{background:var(--maroon2);border:1px solid var(--gold);color:var(--goldl)}
+#receipt{border:6px double #c9971f;font-family:"Noto Sans Tamil",Mulish,sans-serif}
+#receipt h3{font-family:"Tiro Tamil",serif;font-weight:400;font-size:22px;color:#8a1a1f}
+#receipt th{background:#8a1a1f;color:#f1dc9f}
+#receipt td{border-bottom:1px solid #e3cf9a}
+</style>
+</head>
+<body class="l-both">
+
+<header>
+  <div class="inv ta">|| ஸ்ரீ விநாயகர் துணை ||</div>
+  <div class="top">
+    <svg viewBox="0 0 400 400" aria-hidden="true"><circle cx="200" cy="200" r="196" fill="#c4942d"/><circle cx="200" cy="200" r="184" fill="#78121a"/><ellipse cx="98" cy="200" rx="48" ry="60" fill="#e8cf8f"/><ellipse cx="302" cy="200" rx="48" ry="60" fill="#e8cf8f"/><ellipse cx="98" cy="198" rx="30" ry="40" fill="#78121a"/><ellipse cx="302" cy="198" rx="30" ry="40" fill="#78121a"/><ellipse cx="200" cy="210" rx="75" ry="65" fill="#e8cf8f"/><polygon points="165,163 171,115 190,139 200,99 210,139 229,115 235,163" fill="#c4942d" stroke="#78121a" stroke-width="2"/><ellipse cx="169" cy="204" rx="9" ry="8" fill="#78121a"/><ellipse cx="231" cy="204" rx="9" ry="8" fill="#78121a"/><path d="M197,216 C190,235 206,250 199,266 C192,282 206,296 202,314" fill="none" stroke="#e8cf8f" stroke-width="26" stroke-linecap="round"/><circle cx="202" cy="314" r="14" fill="#e8cf8f"/></svg>
+    <div>
+      <h1 class="ta">KVS குமார் வாடகை பாத்திரக்கடை</h1>
+      <p>Sri Vinayaga Suppliers · கருவேப்பிலங்குறிச்சி</p>
+    </div>
+  </div>
+  <div class="hrow">
+    <a class="call" href="tel:+919585563162">📞 95855 63162</a>
+    <a class="call" href="tel:+917010385238">📞 70103 85238</a>
+    <div class="seg" role="group" aria-label="Language">
+      <button data-l="ta">தமிழ்</button><button data-l="en">English</button><button data-l="both" class="on">இரண்டும்</button>
+    </div>
+  </div>
+</header>
+
+<div class="bar">
+  <input class="search" id="search" type="search" placeholder="🔍  தேடுங்கள் / Search items" autocomplete="off">
+  <div class="chips" id="chips"></div>
+</div>
+
+<main>
+  <div id="list"></div>
+  <div class="empty" id="empty"><span class="ta">பொருள் எதுவும் கிடைக்கவில்லை</span><span class="en">No items found</span></div>
+</main>
+
+<div class="dock"><div>
+  <div class="cnt"><span id="cTypes">0</span> <span class="ta">வகைகள்</span><span class="en">items</span><small id="cQty"></small></div>
+  <button class="pri" id="reviewBtn" disabled><span class="ta">ஆர்டர் பார்க்க</span><span class="en">Review order</span></button>
+</div></div>
+
+<div id="sheet"><div class="sh">
+  <div class="shh"><button class="back" id="backBtn">← <span class="ta">பின்</span><span class="en">Back</span></button>
+    <h2><span class="ta">உங்கள் ஆர்டர்</span><span class="en">Your order</span></h2></div>
+  <div class="ono"><div><small class="ta">ஆர்டர் எண் / Order no.</small><br><b id="ono"></b></div><button id="newNo">🔄</button></div>
+  <div class="form">
+    <div class="full"><label class="lab"><span class="ta">பெயர்</span><span class="en">Name</span></label><input id="cName" autocomplete="name"></div>
+    <div><label class="lab"><span class="ta">ஊர்</span><span class="en">Village</span></label><input id="cVillage"></div>
+    <div><label class="lab"><span class="ta">செல்</span><span class="en">Phone</span></label><input id="cPhone" type="tel" inputmode="numeric" maxlength="10" pattern="[0-9]{10}" placeholder="10 digit mobile no." autocomplete="tel"><div id="phErr" style="display:none;color:#c0182b;font-size:.76rem;margin-top:3px">10 இலக்க செல் எண் உள்ளிடவும் / Enter 10-digit mobile number</div></div>
+    <div class="full"><label class="lab"><span class="ta">தேதி</span><span class="en">Date</span></label><input id="cDate" type="date"></div>
+  </div>
+  <div id="sList"></div>
+  <button class="clr" id="clrBtn"><span class="ta">எல்லாவற்றையும் அழி</span><span class="en">Clear order</span></button>
+</div>
+<div class="sdock"><div>
+  <button class="sec" id="pdfBtn">⬇ PDF</button>
+  <button class="wa" id="waBtn">💬 <span class="ta">வாட்ஸ்அப்</span><span class="en">WhatsApp</span></button>
+</div></div></div>
+
+<div id="toast"></div>
+<div id="receipt"></div>
+
+<script>
+const I=[
+["இரும்பு அடுப்பு","Iron stove"],["கேஸ் டபுள் அடுப்பு","Gas double stove"],["கேஸ் சிங்கிள் அடுப்பு","Gas single stove"],["கேஸ் தோசை கல் அடுப்பு","Gas dosa tawa stove"],["தோசை குருப்பி","Dosa turner"],["ஜார்ணி","Jharni (slotted ladle)"],["பெரிய வடை வாணலி","Large vada kadai"],
+["5 கிலோ டவரா","5 kg Davara"],["10 கிலோ டவரா","10 kg Davara"],["15 கிலோ டவரா","15 kg Davara"],["20 கிலோ டவரா","20 kg Davara"],["25 கிலோ டவரா","25 kg Davara"],["30 கிலோ டவரா","30 kg Davara"],["40 கிலோ டவரா","40 kg Davara"],["50 கிலோ டவரா","50 kg Davara"],["70 கிலோ டவரா","70 kg Davara"],
+["அலுமினியம் டவரா மூடி","Aluminium Davara lid"],["அலுமினியம் இட்லி பானை","Aluminium idli pot"],["சாதம் வடிக்கூடை","Rice draining basket"],["கைப்பிடி வட்டா","Handle vatta (basin)"],["பெரிய சாம்பார் குவளை","Large sambar vessel"],
+["சில்வர் வாலி","Steel bucket"],["சில்வர் கரண்டி","Steel ladle"],["சில்வர் பேஷன்","Steel basin"],["சில்வர் அன்னவட்டி","Steel rice bowl"],["சில்வர் ஜெக்","Steel jug"],["சில்வர் அன்னக்கூடை","Steel rice basket"],["சில்வர் கொத்து வாலி","Steel serving bucket"],["சில்வர் குவளை","Steel tumbler"],["சில்வர் தாம்பாளம்","Steel thambalam plate"],["சில்வர் டேபிள்","Steel table"],
+["பெரிய இரும்பு துடுப்பு","Large iron paddle"],["பெரிய இரும்பு குருப்பி","Large iron kurupi"],["சேர்","Chair"],["ராஜா ராணி வி.ஐ.பி. சேர்","Raja Rani VIP chair"],
+["சாமியானா பந்தல் 10x10","Samiyana pandal 10x10"],["சாமியானா பந்தல் 10x15","Samiyana pandal 10x15"],["சாமியானா பந்தல் 10x20","Samiyana pandal 10x20"],["சாமியானா பந்தல் 10x30","Samiyana pandal 10x30"],["சாமியானா பந்தல் 12x24","Samiyana pandal 12x24"],["சாமியானா பந்தல் 15x20","Samiyana pandal 15x20"],["சாமியானா பந்தல் 15x30","Samiyana pandal 15x30"],["சாமியானா பந்தல் 20x20","Samiyana pandal 20x20"],["சாமியானா பந்தல் 20x30","Samiyana pandal 20x30"],["சாமியானா பந்தல் 20x40","Samiyana pandal 20x40"],
+["டிசைன் பந்தல் 15x10","Design pandal 15x10"],["டிசைன் பந்தல் 15x20","Design pandal 15x20"],["டிசைன் பந்தல் 15x30","Design pandal 15x30"],["பந்தல் குச்சி","Pandal poles"],["பந்தல் ஆணி","Pandal nails"],
+["சைடு மரப்பு துணி 6x20","Side cloth 6x20"],["சைடு டிசைன் துணி","Side design cloth"],["டேபிள் டிசைன் துணி","Table design cloth"],
+["மிக்ஸி - ஜார்","Mixie jar"],["தேங்காய் திருகல் மிஷின்","Coconut scraper machine"],["தேங்காய் திருகல் கட்டை","Coconut scraper block"],["அருவாமனை","Aruvamanai (cutting blade)"],["மில்க் கேன்","Milk can"],["தண்ணீர் பாரல்","Water barrel"]
+];
+const C=[[0,"அடுப்பு & சமையல்","Stoves & Cooking"],[7,"டவரா & பாத்திரங்கள்","Davara & Vessels"],[21,"சில்வர் பாத்திரங்கள்","Steel items"],[31,"இரும்பு & சேர்","Iron & Chairs"],[35,"பந்தல் & துணி","Pandal & Cloth"],[53,"மற்றவை","Others"]];
+const SHOP="919585563162", KEY="kvs_order_v3";
+const Q=new Array(I.length).fill(0);
+let ono="", lang="both";
+const $=id=>document.getElementById(id);
+const S=(ta,en)=>`<span class="ta">${ta}</span><span class="en">${en}</span>`;
+
+// ---------- build list ----------
+(function(){
+  let h="",ch="";
+  C.forEach((c,ci)=>{
+    const end=C[ci+1]?C[ci+1][0]:I.length;
+    h+=`<section data-c="${ci}"><div class="cat" id="cat${ci}"><div class="ct">${S(c[1],c[2])}</div></div>`;
+    for(let i=c[0];i<end;i++){
+      h+=`<div class="item" id="r${i}" data-s="${(I[i][0]+" "+I[i][1]).toLowerCase()}"><div class="nm">${S(I[i][0],I[i][1])}</div>
+      <div class="step"><button class="m" data-i="${i}" data-d="-1" aria-label="-">−</button><input id="q${i}" type="number" inputmode="numeric" min="0" value="0" data-i="${i}"><button data-i="${i}" data-d="1" aria-label="+">+</button></div></div>`;
+    }
+    h+="</section>";
+    ch+=`<button class="chip" data-go="${ci}">${S(c[1],c[2])}</button>`;
+  });
+  $("list").innerHTML=h; $("chips").innerHTML=ch;
+})();
+
+// ---------- state ----------
+function save(){try{localStorage.setItem(KEY,JSON.stringify({q:Q,ono,lang,c:{n:$("cName").value,v:$("cVillage").value,p:$("cPhone").value}}))}catch(e){}}
+function load(){try{const d=JSON.parse(localStorage.getItem(KEY)||"null");if(!d)return;
+  (d.q||[]).forEach((v,i)=>{if(i<Q.length)Q[i]=v|0});ono=d.ono||"";if(d.lang)setLang(d.lang,true);
+  if(d.c){$("cName").value=d.c.n||"";$("cVillage").value=d.c.v||"";$("cPhone").value=d.c.p||""}}catch(e){}}
+function setQ(i,v){Q[i]=Math.max(0,Math.min(999,v|0));sync(i);if($("sheet").classList.contains("open"))drawSheet();save()}
+function sync(i){
+  const inp=$("q"+i);if(document.activeElement!==inp||inp.value!==String(Q[i]))inp.value=Q[i];
+  $("r"+i).classList.toggle("on",Q[i]>0);counts()}
+function counts(){
+  const t=Q.filter(x=>x>0).length,s=Q.reduce((a,b)=>a+b,0);
+  $("cTypes").textContent=t;$("cQty").textContent=t?("மொத்த எண்ணிக்கை / Total qty: "+s):"+ ஐ அழுத்தி சேர்க்கவும் / Tap + to add";
+  $("reviewBtn").disabled=!t}
+function setLang(l,quiet){lang=l;document.body.className="l-"+l;
+  document.querySelectorAll(".seg button").forEach(b=>b.classList.toggle("on",b.dataset.l===l));if(!quiet)save()}
+function toast(m){const t=$("toast");t.textContent=m;t.style.display="block";clearTimeout(toast.t);toast.t=setTimeout(()=>t.style.display="none",2600)}
+function genNo(){const d=new Date();return "KVS-"+d.getFullYear()+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0")+"-"+Math.floor(1000+Math.random()*9000)}
+function today(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+
+// ---------- events ----------
+$("list").addEventListener("click",e=>{const b=e.target.closest("button[data-i]");if(!b)return;const i=+b.dataset.i;setQ(i,Q[i]+ +b.dataset.d)});
+$("list").addEventListener("input",e=>{if(e.target.matches("input[data-i]")){const i=+e.target.dataset.i;Q[i]=Math.max(0,Math.min(999,parseInt(e.target.value)||0));$("r"+i).classList.toggle("on",Q[i]>0);counts();save()}});
+$("list").addEventListener("focusin",e=>{if(e.target.matches("input[data-i]"))e.target.select()});
+$("list").addEventListener("focusout",e=>{if(e.target.matches("input[data-i]"))sync(+e.target.dataset.i)});
+$("chips").addEventListener("click",e=>{const b=e.target.closest("[data-go]");if(b){$("search").value="";filter();$("cat"+b.dataset.go).scrollIntoView({behavior:"smooth"})}});
+document.querySelector(".seg").addEventListener("click",e=>{const b=e.target.closest("button");if(b)setLang(b.dataset.l)});
+function filter(){
+  const q=$("search").value.trim().toLowerCase();let any=false;
+  document.querySelectorAll("#list section").forEach(sec=>{let n=0;
+    sec.querySelectorAll(".item").forEach(it=>{const ok=!q||it.dataset.s.includes(q);it.style.display=ok?"":"none";if(ok)n++});
+    sec.style.display=n?"":"none";if(n)any=true});
+  $("empty").style.display=any?"none":"block"}
+$("search").addEventListener("input",filter);
+
+// ---------- review sheet ----------
+function drawSheet(){
+  let h="";let n=0;
+  Q.forEach((q,i)=>{if(q>0){n++;h+=`<div class="item on"><div class="nm">${S(I[i][0],I[i][1])}</div><div class="step"><button class="m" data-i="${i}" data-d="-1">−</button><div class="v">${q}</div><button data-i="${i}" data-d="1">+</button></div></div>`}});
+  $("sList").innerHTML=h||`<p class="empty" style="display:block">${S("பொருட்கள் இல்லை","No items selected")}</p>`;
+}
+$("sList").addEventListener("click",e=>{const b=e.target.closest("button[data-i]");if(!b)return;const i=+b.dataset.i;setQ(i,Q[i]+ +b.dataset.d)});
+$("reviewBtn").onclick=()=>{if(!ono)ono=genNo();$("ono").textContent=ono;if(!$("cDate").value)$("cDate").value=today();drawSheet();$("sheet").classList.add("open");$("sheet").scrollTop=0;save()};
+$("backBtn").onclick=()=>$("sheet").classList.remove("open");
+$("newNo").onclick=()=>{ono=genNo();$("ono").textContent=ono;save()};
+["cName","cVillage"].forEach(id=>$(id).addEventListener("input",save));
+$("cPhone").addEventListener("input",e=>{e.target.value=e.target.value.replace(/\D/g,"").slice(0,10);if(phoneOk())$("phErr").style.display="none";save()});
+function phoneOk(){return /^[6-9]\d{9}$/.test($("cPhone").value)}
+function checkPhone(){if(phoneOk())return true;$("phErr").style.display="block";$("cPhone").focus();$("cPhone").scrollIntoView({block:"center",behavior:"smooth"});toast("சரியான 10 இலக்க செல் எண் தேவை / Valid 10-digit mobile no. required");return false}
+let clrArm=false;
+$("clrBtn").onclick=()=>{if(!clrArm){clrArm=true;toast("மீண்டும் அழுத்தவும் / Tap again to clear");setTimeout(()=>clrArm=false,3000);return}
+  clrArm=false;Q.fill(0);for(let i=0;i<Q.length;i++)sync(i);ono=genNo();$("ono").textContent=ono;drawSheet();save();$("sheet").classList.remove("open")};
+
+function info(){return{n:$("cName").value||"-",v:$("cVillage").value||"-",p:$("cPhone").value||"-",d:$("cDate").value||today()}}
+function rows(){return Q.map((q,i)=>q>0?{i,q}:null).filter(Boolean)}
+
+// ---------- WhatsApp ----------
+$("waBtn").onclick=()=>{
+  const r=rows();if(!r.length)return toast("பொருட்களை தேர்வு செய்யவும் / Select items first");
+  if(!checkPhone())return;
+  const c=info(),tq=r.reduce((a,x)=>a+x.q,0),ln="━━━━━━━━━━━━━━";
+  let t=`*KVS குமார் வாடகை பாத்திரக்கடை*\n*Sri Vinayaga Suppliers*\n${ln}\n*ஆர்டர் எண் / Order no:* ${ono}\n*பெயர் / Name:* ${c.n}\n*ஊர் / Village:* ${c.v}\n*செல் / Phone:* ${c.p}\n*தேதி / Date:* ${c.d}\n${ln}\n*பொருட்கள் பட்டியல் / Item List*\n\n`;
+  r.forEach((x,k)=>t+=`${k+1}. ${I[x.i][0]} (${I[x.i][1]}) - *${x.q}*\n`);
+  t+=`${ln}\n*மொத்த வகைகள் / Total items:* ${r.length}\n*மொத்த எண்ணிக்கை / Total qty:* ${tq}`;
+  window.open("https://wa.me/"+SHOP+"?text="+encodeURIComponent(t),"_blank");
+};
+
+// ---------- PDF ----------
+$("pdfBtn").onclick=async()=>{
+  const r=rows();if(!r.length)return toast("பொருட்களை தேர்வு செய்யவும் / Select items first");
+  if(!checkPhone())return;
+  const btn=$("pdfBtn"),old=btn.innerHTML;btn.disabled=true;btn.textContent="…";
+  try{
+    const c=info(),el=$("receipt");
+    el.innerHTML=`<h3>KVS குமார் வாடகை பாத்திரக்கடை</h3><small>Sri Vinayaga Suppliers · 95855 63162 | 70103 85238<br>ஸ்ரீமுஷ்ணம் ரோடு, கருவேப்பிலங்குறிச்சி-606110</small>
+    <p style="margin:12px 0 4px"><b>ஆர்டர் எண் / Order no:</b> ${ono}</p>
+    <p style="margin:0"><b>பெயர் / Name:</b> ${c.n} &nbsp; <b>ஊர் / Village:</b> ${c.v}<br><b>செல் / Phone:</b> ${c.p} &nbsp; <b>தேதி / Date:</b> ${c.d}</p>
+    <table><tr><th>#</th><th>விபரம் / Item</th><th>எண் / Qty</th></tr>${r.map((x,k)=>`<tr><td>${k+1}</td><td>${I[x.i][0]}<br><small>${I[x.i][1]}</small></td><td><b>${x.q}</b></td></tr>`).join("")}</table>
+    <p style="text-align:right;margin-top:10px"><b>மொத்த வகைகள் / Total items: ${r.length}</b></p>`;
+    if(document.fonts&&document.fonts.ready)await document.fonts.ready;
+    const cv=await html2canvas(el,{scale:2,backgroundColor:"#fff"});
+    const {jsPDF}=window.jspdf,pdf=new jsPDF({unit:"pt",format:"a4"});
+    const pw=pdf.internal.pageSize.getWidth(),ph=pdf.internal.pageSize.getHeight(),m=24,w=pw-2*m,pageH=ph-2*m;
+    const sliceH=Math.floor(pageH*cv.width/w);
+    for(let y=0,p=0;y<cv.height;y+=sliceH,p++){
+      const h=Math.min(sliceH,cv.height-y),s=document.createElement("canvas");s.width=cv.width;s.height=h;
+      s.getContext("2d").drawImage(cv,0,y,cv.width,h,0,0,cv.width,h);
+      if(p)pdf.addPage();pdf.addImage(s.toDataURL("image/png"),"PNG",m,m,w,h*w/cv.width);
+    }
+    const blob=pdf.output("blob"),fname=ono+".pdf";
+    const dl=(window.claude&&window.claude.use)?await window.claude.use("downloads"):null;
+    if(dl){try{await dl.save({filename:fname,data:blob});toast("✔ PDF")}catch(e){}}
+    else{const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fname;document.body.appendChild(a);a.click();a.remove();toast("✔ PDF")}
+  }catch(e){toast("PDF தோல்வி / PDF failed")}
+  finally{btn.disabled=false;btn.innerHTML=old;$("receipt").innerHTML=""}
+};
+
+load();for(let i=0;i<Q.length;i++)sync(i);counts();
+</script>
+</body>
+</html>
